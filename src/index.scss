@@ -1,3 +1,8 @@
 @use "@carbon/react" with (
   $font-path: "@ibm/plex"
 );
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 20px;
+}
