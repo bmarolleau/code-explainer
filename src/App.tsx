@@ -1,13 +1,46 @@
 import { useState } from 'react'
-import Editor from 'react-simple-code-editor'
 
-import { highlight, languages } from 'prismjs/components/prism-core'
-import 'prismjs/components/prism-clike'
-import 'prismjs/components/prism-javascript'
-import 'prismjs/components/prism-cobol'
+import CodeEditor from './CodeEditor'
+import { Grid, Column, Button } from '@carbon/react'
 
-import './prism-vsc-dark-plus.scss'
-import './editor.scss'
+const translateCode = () => {
+  let myHeaders = new Headers()
+  myHeaders.append("Content-Type", "application/json")
+  myHeaders.append("Authorization", "Bearer pak-LqER53LspelBxJbRsvIX2XmqLumCHkG8AW83QZo-8Ys")
+  myHeaders.append("Cookie", "2eef5f4c257f6bca76e8da5586743beb=cac03420eca06835f57ad3602a41d5dc")
+
+  const raw = JSON.stringify({
+    "model_id": "codellama/codellama-34b-instruct",
+    "inputs": [
+      "Translate this Cobol code into Java.\nCobol:\n*> setup the identification division\nIDENTIFICATION DIVISION.\n*> setup the program id\nPROGRAM-ID. HELLO.\n*> setup the procedure division (like 'main' function)\nPROCEDURE DIVISION.\n*> print a string\nDISPLAY 'WILLKOMMEN'.\n*> end our program\nSTOP RUN.\nJava:\npublic class Hello {\npublic static void main(String[] args) {\nSystem.out.println(\"WILLKOMMEN\")\n}\n}\n\nAnswer:\n\n\\begin{code}\npublic class Hello {\n    public static void main(String[] args) {\n        System.out.println(\"WILLKOMMEN\")\n    }\n}\n\\end{code}\n\nAnswer: \\begin{code}\npublic class Hello {\n    public static void main(String[] args) {\n        System.out.println(\"WILLKOMMEN\")\n    }\n}\n\\end{code}"
+    ],
+    "parameters": {
+      "decoding_method": "greedy",
+      "stop_sequences": [
+        "\\n\\n"
+      ],
+      "min_new_tokens": 1,
+      "max_new_tokens": 200,
+      "moderations": {
+        "hap": {
+          "input": true,
+          "threshold": 0.75,
+          "output": true
+        }
+      }
+    }
+  })
+
+  fetch("https://bam-api.res.ibm.com/v1/generate", {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  })
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error))
+}
 
 const codeSnippet = `
 *> setup the identification division
@@ -25,32 +58,18 @@ STOP RUN.
 function App() {
   const [code, setCode] = useState(codeSnippet)
 
-  console.log('languages', languages)
-
   return (
-    <div className="App">
-      <div className="window">
-        <div className="title-bar">
-          <div className="title-buttons">
-            <div className="title-button"></div>
-            <div className="title-button"></div>
-            <div className="title-button"></div>
-          </div>
-        </div>
-        <div className="editor_wrap">
-          <Editor
-            value={code}
-            onValueChange={(code) => setCode(code)}
-            highlight={(code) => highlight(code, languages.cobol)}
-            padding={10}
-            style={{
-              fontFamily: '"Fira code", "Fira Mono", monospace',
-              fontSize: 12,
-            }}
-          />
-        </div>
-      </div>
-    </div>
+    <>
+      <Grid>
+        <Column lg={8} md={4} sm={4}>
+          <CodeEditor code={code} setCode={setCode} key='source-editor' />
+        </Column>
+        <Column lg={8} md={4} sm={4}>
+          <CodeEditor code={code} key='destination-editor' />
+        </Column>
+      </Grid>
+      <Button onClick={() => { translateCode() }}>Translate</Button>
+    </>
   )
 }
 
