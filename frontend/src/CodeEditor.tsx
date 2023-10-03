@@ -9,13 +9,15 @@ import 'prismjs/components/prism-cobol'
 import './prism-vsc-dark-plus.scss'
 import './CodeEditor.scss'
 
-const CodeEditor = ({ code, setCode, selectedLanguage, setSelectedLanguage }: { code: string, setCode?: CallableFunction, selectedLanguage: string, setSelectedLanguage: CallableFunction }) => {
+const CodeEditor = ({ code, setCode, selectedLanguage, setSelectedLanguage, readOnly }: { code: string, setCode?: CallableFunction, selectedLanguage: string, setSelectedLanguage: CallableFunction, readOnly: boolean }) => {
     return (
         <>
             <Dropdown id='dropdown-code-language' items={['cobol', 'java']} label={'Select Language'} onChange={({ selectedItem }: { selectedItem: string }) => { setSelectedLanguage(selectedItem) }} />
             <Editor
+                readOnly={readOnly}
                 className='code-editor'
                 value={code}
+
                 onValueChange={setCode != null ? (code) => setCode(code) : () => { }}
                 // Create mapping
                 highlight={(code) => highlight(code, selectedLanguage === 'java' ? languages.java : languages.cobol)}

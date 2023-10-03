@@ -1,6 +1,7 @@
-@use "@carbon/react/scss/spacing";
-
 .code-editor {
+    min-height: 300px;
+    max-height: 500px;
+
     background-color: #1a1e22;
     color: #fff;
 }

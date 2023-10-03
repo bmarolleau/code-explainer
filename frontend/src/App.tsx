@@ -1,8 +1,10 @@
 import { useState } from 'react'
 
 import CodeEditor from './CodeEditor'
-import { Grid, Column, Button } from '@carbon/react'
+import { Grid, Column, Button, InlineLoading } from '@carbon/react'
 
+import './App.scss'
+import AppHeader from './AppHeader'
 
 
 // const codeSnippet = `
@@ -64,16 +66,17 @@ function App() {
 
   return (
     <>
-      <Grid>
+      <AppHeader />
+      <Grid id='main'>
         <Column lg={8} md={4} sm={4}>
-          <CodeEditor code={sourceCode} setCode={setSourceCode} selectedLanguage={selectedSourceLanguage} setSelectedLanguage={setSelectedSourceLanguage} key='source-editor' />
+          <CodeEditor code={sourceCode} setCode={setSourceCode} selectedLanguage={selectedSourceLanguage} setSelectedLanguage={setSelectedSourceLanguage} readOnly={false} key='source-editor' />
         </Column>
         <Column lg={8} md={4} sm={4}>
-          <CodeEditor code={destinationCode} setCode={setDestinationCode} selectedLanguage={selectedDestinationLanguage} setSelectedLanguage={setSelectedDestinationLanguage} key='destination-editor' />
+          <CodeEditor code={destinationCode} setCode={setDestinationCode} selectedLanguage={selectedDestinationLanguage} setSelectedLanguage={setSelectedDestinationLanguage} readOnly={true} key='destination-editor' />
         </Column>
       </Grid>
       <Button onClick={async () => { setDestinationCode(await translateCode(sourceCode)) }} disabled={sourceCode === '' || selectedSourceLanguage === '' || selectedDestinationLanguage === '' || fetching}>
-        {fetching ? "Fetching ..." : "Translate"}
+        {fetching ? <InlineLoading status="active" iconDescription="Loading" description="Translating ..." /> : "Translate"}
       </Button>
     </>
   )
