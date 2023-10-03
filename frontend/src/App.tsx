@@ -7,18 +7,18 @@ import './App.scss'
 import AppHeader from './AppHeader'
 
 
-const codeSnippet = `
-*> setup the identification division
-IDENTIFICATION DIVISION.
-*> setup the program id
-PROGRAM-ID. HELLO.
-*> setup the procedure division (like 'main' function)
-PROCEDURE DIVISION.
-*> print a string
-DISPLAY 'WILLKOMMEN'.
-*> end our program
-STOP RUN.
-`
+// const codeSnippet = `
+// *> setup the identification division
+// IDENTIFICATION DIVISION.
+// *> setup the program id
+// PROGRAM-ID. HELLO.
+// *> setup the procedure division (like 'main' function)
+// PROCEDURE DIVISION.
+// *> print a string
+// DISPLAY 'WILLKOMMEN'.
+// *> end our program
+// STOP RUN.
+// `
 
 const stringBetweenStrings = (startStr: string, endStr: string, str: string) => {
   const pos = str.indexOf(startStr) + startStr.length

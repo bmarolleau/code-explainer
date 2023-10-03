@@ -24,29 +24,7 @@ class CodeGenerationRequest(BaseModel):
 @app.post("/v1/generate")
 async def generate_code(request_data: CodeGenerationRequest):
     url = "https://bam-api.res.ibm.com/v1/generate"
-    
-    # payload = json.dumps({
-    #     "model_id": "codellama/codellama-34b-instruct",
-    #     "inputs": [
-    #         "Translate this Cobol code into Java.\nCobol:\n*> setup the identification division\nIDENTIFICATION DIVISION.\n*> setup the program id\nPROGRAM-ID. HELLO.\n*> setup the procedure division (like 'main' function)\nPROCEDURE DIVISION.\n*> print a string\nDISPLAY 'WILLKOMMEN'.\n*> end our program\nSTOP RUN.\nJava:\npublic class Hello {\npublic static void main(String[] args) {\nSystem.out.println(\"WILLKOMMEN\");\n}\n}\n\nAnswer:\n\n\\begin{code}\npublic class Hello {\n    public static void main(String[] args) {\n        System.out.println(\"WILLKOMMEN\");\n    }\n}\n\\end{code}\n\nAnswer: \\begin{code}\npublic class Hello {\n    public static void main(String[] args) {\n        System.out.println(\"WILLKOMMEN\");\n    }\n}\n\\end{code}"
-    #     ],
-    #     "parameters": {
-    #         "decoding_method": "greedy",
-    #         "stop_sequences": [
-    #             "\\n\\n"
-    #         ],
-    #         "min_new_tokens": 1,
-    #         "max_new_tokens": 200,
-    #         "moderations": {
-    #             "hap": {
-    #                 "input": True,
-    #                 "threshold": 0.75,
-    #                 "output": True
-    #             }
-    #         }
-    #     }
-    # })
-    # api_key = 'pak-LqER53LspelBxJbRsvIX2XmqLumCHkG8AW83QZo-8Ys'
+
     headers = {
         'Content-Type': 'application/json',
         'Authorization': f'Bearer {request_data.api_key}',
