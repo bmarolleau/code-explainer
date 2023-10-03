@@ -1,37 +1,26 @@
 import Editor from 'react-simple-code-editor'
-import { Dropdown, InlineLoading, Grid, Column } from '@carbon/react'
+import { Dropdown } from '@carbon/react'
 import { highlight, languages } from 'prismjs/components/prism-core'
 
 import 'prismjs/components/prism-clike'
-import 'prismjs/components/prism-javascript'
+import 'prismjs/components/prism-java'
 import 'prismjs/components/prism-cobol'
 
 import './prism-vsc-dark-plus.scss'
 import './CodeEditor.scss'
 
-
-
-const CodeEditor = ({ code, setCode }: { code: string, setCode?: CallableFunction }) => {
+const CodeEditor = ({ code, setCode, selectedLanguage, setSelectedLanguage }: { code: string, setCode?: CallableFunction, selectedLanguage: string, setSelectedLanguage: CallableFunction }) => {
     return (
         <>
-            <Grid>
-                <Column lg={5} md={4} sm={2}>
-                    <Dropdown id='dropdown-code-language' items={['cobol', 'javascript']} label={'Language'} />
-                </Column>
-                <Column lg={3} md={2} sm={2}>
-                    <InlineLoading status="active" iconDescription="Loading" description="Loading data..." />
-                </Column>
-            </Grid>
+            <Dropdown id='dropdown-code-language' items={['cobol', 'java']} label={'Select Language'} onChange={({ selectedItem }: { selectedItem: string }) => { setSelectedLanguage(selectedItem) }} />
             <Editor
                 className='code-editor'
                 value={code}
                 onValueChange={setCode != null ? (code) => setCode(code) : () => { }}
-                highlight={(code) => highlight(code, languages.cobol)}
+                // Create mapping
+                highlight={(code) => highlight(code, selectedLanguage === 'java' ? languages.java : languages.cobol)}
                 padding={10}
-                style={{
-                    fontFamily: '"Fira code", "Fira Mono", monospace',
-                    fontSize: 14,
-                }}
+                style={{ fontFamily: '"Fira code", "Fira Mono", monospace', fontSize: 14, }}
             />
         </>
     )
