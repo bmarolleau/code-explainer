@@ -62,7 +62,7 @@ Before getting started, ensure that you have Node.js and Python installed on you
 ## Acknowledgments
 
 - This project utilizes the power of [watsonx.ai](https://watsonx.ai/) for code translation. Currently the internal [BAM version](https://bam.res.ibm.com/) is being used. Therefore, please only use it for internal purposes for now.
-- The frontend is built with [React](https://reactjs.org/) and [Carbon Design System](https://www.carbondesignsystem.com/).
+- The frontend is built with [React](https://reactjs.org/), [Vite](https://vitejs.dev/) and [Carbon Design System](https://www.carbondesignsystem.com/).
 - The backend is powered by [FastAPI](https://fastapi.tiangolo.com/).
 
 ## Contributing
