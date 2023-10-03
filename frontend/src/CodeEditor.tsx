@@ -17,7 +17,6 @@ const CodeEditor = ({ code, setCode, selectedLanguage, setSelectedLanguage, read
                 readOnly={readOnly}
                 className='code-editor'
                 value={code}
-
                 onValueChange={setCode != null ? (code) => setCode(code) : () => { }}
                 // Create mapping
                 highlight={(code) => highlight(code, selectedLanguage === 'java' ? languages.java : languages.cobol)}

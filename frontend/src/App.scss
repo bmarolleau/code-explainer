@@ -1,14 +1,27 @@
 @use "@carbon/react/scss/spacing";
 
-.cds--btn {
-    margin-top: spacing.$spacing-05 !important;
-    margin-left: 32px !important;
-}
-
-.cds--dropdown__wrapper {
-    margin-bottom: spacing.$spacing-05 !important;
-}
-
 #main {
-    margin-top: spacing.$spacing-11;
+    padding-left: 32px !important;
+    padding-top: spacing.$spacing-10;
+
+    .cds--css-grid-column {
+        margin-left: 0 !important;
+        margin-right: spacing.$spacing-08 !important;
+    }
+
+    .cds--css-grid {
+        padding-left: 0 !important;
+    }
+
+    .cds--dropdown__wrapper {
+        margin-bottom: spacing.$spacing-05 !important;
+    }
+}
+
+#main > * {
+    margin-top: spacing.$spacing-06 !important;
+}
+
+.cds--css-grid > * {
+    margin-top: spacing.$spacing-06 !important;
 }

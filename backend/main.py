@@ -15,6 +15,7 @@ app.add_middleware(
 
 
 class CodeGenerationRequest(BaseModel):
+    api_key: str
     model_id: str
     inputs: list[str]
     parameters: dict
@@ -45,11 +46,12 @@ async def generate_code(request_data: CodeGenerationRequest):
     #         }
     #     }
     # })
+    # api_key = 'pak-LqER53LspelBxJbRsvIX2XmqLumCHkG8AW83QZo-8Ys'
     headers = {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer pak-LqER53LspelBxJbRsvIX2XmqLumCHkG8AW83QZo-8Ys',
+        'Authorization': f'Bearer {request_data.api_key}',
     }
-    
+    request_data.__delattr__('api_key')
     response = requests.request("POST", url, headers=headers, data=request_data.model_dump_json())
     
     return response.json()['results'][0]['generated_text']
