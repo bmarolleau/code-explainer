@@ -3,7 +3,6 @@ WORKDIR /opt/app-root
 USER 1001
 ENV NODE_ENV=production
 
-
 COPY --chown=1001:0 package*.json .
 RUN npm install --include=dev
 
@@ -12,7 +11,7 @@ COPY --chown=1001:0 vite.config.ts .
 COPY --chown=1001:0 index.html .
 COPY --chown=1001:0 src src
 COPY --chown=1001:0 public public
-RUN npm run build_only
+RUN npm run build
 
 FROM registry.access.redhat.com/ubi9/nginx-120
 
