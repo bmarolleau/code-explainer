@@ -13,7 +13,7 @@ This monorepo contains a full-stack application for a Code Translator built with
 - Easy-to-use and deployable monorepo structure.
 
 ## Todos
-- [ ] Containerize
+- [x] Containerize
 - [ ] Add additional watsonx.ai instances besides BAM
 - [ ] Get saved prompts from watsonx.ai and built view to select them
 - [ ] Detect language, also using an LLM

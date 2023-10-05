@@ -1,0 +1,24 @@
+FROM registry.access.redhat.com/ubi9/nodejs-18-minimal as BUILDER
+WORKDIR /opt/app-root
+USER 1001
+ENV NODE_ENV=production
+
+
+COPY --chown=1001:0 package*.json .
+RUN npm install --include=dev
+
+COPY --chown=1001:0 tsconfig*.json .
+COPY --chown=1001:0 vite.config.ts .
+COPY --chown=1001:0 index.html .
+COPY --chown=1001:0 src src
+COPY --chown=1001:0 public public
+RUN npm run build_only
+
+FROM registry.access.redhat.com/ubi9/nginx-120
+
+COPY --from=BUILDER /opt/app-root/dist .
+COPY nginx.conf ${NGINX_DEFAULT_CONF_PATH}/nginx.conf
+
+EXPOSE 8080
+
+CMD ["nginx", "-g", "daemon off;"]
