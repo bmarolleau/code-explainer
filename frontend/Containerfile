@@ -18,6 +18,6 @@ FROM registry.access.redhat.com/ubi9/nginx-120
 COPY --from=BUILDER /opt/app-root/dist .
 COPY nginx.conf ${NGINX_DEFAULT_CONF_PATH}/nginx.conf
 
-EXPOSE 8080
+EXPOSE 5173
 
 CMD ["nginx", "-g", "daemon off;"]
