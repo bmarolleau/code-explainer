@@ -56,20 +56,23 @@ function App() {
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
 
-    const input =
-      '[INST] Please translate following ' +
-      selectedSourceLanguage +
-      ' code into ' +
-      selectedDestinationLanguage +
-      '. Please wrap your code answer using' +
-      wrapperString +
-      ':\n' +
-      sourceCode +
-      '\n[/INST]';
+    // const input =
+    //   '[INST] Please translate following ' +
+    //   selectedSourceLanguage +
+    //   ' code into ' +
+    //   selectedDestinationLanguage +
+    //   '. Please wrap your code answer using' +
+    //   wrapperString +
+    //   ':\n' +
+    //   sourceCode +
+    //   '\n[/INST]';
+
+    const input = 'Please translate following ' + selectedSourceLanguage + ' code into ' + selectedDestinationLanguage + '. Only return the translated code and wrap it in ' + wrapperString + '.\n' + selectedSourceLanguage + ':\n' + sourceCode + '\n' + selectedDestinationLanguage + ':\n'
 
     const raw = JSON.stringify({
       api_key: apiKey,
-      model_id: 'codellama/codellama-34b-instruct',
+      // model_id: 'codellama/codellama-34b-instruct',
+      model_id: 'bigcode/starcoder',
       inputs: [input],
       parameters: {
         decoding_method: 'greedy',
