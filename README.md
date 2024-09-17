@@ -1,6 +1,6 @@
-# Code Translator powered by watsonx.ai
+# Code Explainer powered by watsonx.ai
 
-This monorepo contains a full-stack application for a Code Translator built with React for the frontend and FastAPI in Python for the backend. The application utilizes the power of **watsonx.ai**. In this specific instance, we employ one of the code fine-tuned Language Models (LLM) to translate code from one programming language to another.
+This monorepo contains a full-stack application for a Code Explainer built with React for the frontend and FastAPI in Python for the backend. The application utilizes the power of **watsonx.ai**. In this specific instance, we employ one of the code fine-tuned Language Models (LLM) to translate code from one programming language to another.
 
 ![App Screenshot](frontend/src/assets/screenshot_frontend.png)
 
@@ -70,7 +70,7 @@ Before getting started, ensure that you have Node.js and Python installed on you
 
 ## Contributing
 
-I welcome contributions! If you'd like to improve this Code Translator or fix any issues, please fork this repository and create a pull request.
+I welcome contributions! If you'd like to improve this Code Explainer or fix any issues, please fork this repository and create a pull request.
 
 ## Contact
 
