@@ -13,7 +13,6 @@ This monorepo contains a full-stack application for a Code Explainer built with 
 - Easy-to-use and deployable monorepo structure.
 
 
-
 ## Installation
 
 Before getting started, ensure that you have Node.js and Python installed on your system.

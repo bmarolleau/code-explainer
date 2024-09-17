@@ -112,7 +112,7 @@ function App() {
 
     });
 
-    const response = await fetch('http://127.0.0.1:8080/v1/generate', {
+    const response = await fetch('http://127.0.0.1:8080/v1/explain', {
       method: 'POST',
       headers: myHeaders,
       body: raw,
@@ -132,7 +132,7 @@ function App() {
         <Grid>
           <Column lg={16} md={8} sm={4}>
             <PasswordInput
-              id="text-input-api-key"
+              id="password"
               labelText="watsonx.ai API Key"
               onChange={(e: { target: { value: SetStateAction<string> } }) => {
                 setApiKey(e.target.value);
