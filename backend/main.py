@@ -22,6 +22,9 @@ class CodeGenerationRequest(BaseModel):
     parameters: dict
     data: dict
     
+class CodeExplainWCAZ(BaseModel):
+    api_key: str
+    source_code: str
 
 @app.post("/v1/explain")
 async def generate_code(request_data: CodeGenerationRequest):
@@ -40,7 +43,7 @@ async def generate_code(request_data: CodeGenerationRequest):
     return response.json()['results'][0]['generated_text']
 
 @app.post("/v1/wca4z-explain")
-async def generate_code2(request_data: CodeGenerationRequest):
+async def generate_code2(request_data: CodeExplainWCAZ):
     url = "https://iam.cloud.ibm.com/identity/token"
 
     headers = {
@@ -56,9 +59,11 @@ async def generate_code2(request_data: CodeGenerationRequest):
     #print("HEADERS: "+ headers.__str__)
     #print(request_data.model_dump_json())
 
-    response = requests.request("POST", url, headers=headers, data=request_data2.model_dump_json())
-    print("RESP="+response.json())
-    token=response.json().access_token
+    response = requests.request("POST", url, headers=headers, data=request_data2)
+    print(response.json())
+    json_data = response.json()
+   # json=json.dumps(response.json(), indent=4)
+    token=json_data['access_token']
     print("TOKEN="+token)
 
     url = "https://api.dataplatform.cloud.ibm.com/v1/wca/code/explanation/COBOL?level=DETAILED"
@@ -69,16 +74,11 @@ async def generate_code2(request_data: CodeGenerationRequest):
         'user-agent' : 'zCodeAssistant/2.1.0' 
     }
 
-    #code = request_data.model_dump_json().source_code.encode('ascii')
-    #sourceb64 = base64.b64encode(code)
-    #request_data="{source_code:"+sourceb64+"}"
-    
     response = requests.request("POST", url, headers=headers, data=request_data.model_dump_json())
-    print("RESP2="+response.json())
-    token=response.json().access_token
-    print("TOKEN2="+token)
+    json_data = response.json()
+    code=json_data['generated_text']
 
-    return response.json()['results'][0]['generated_text']
+    return code
 
 
 if __name__ == "__main__":

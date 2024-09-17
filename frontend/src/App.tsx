@@ -1,7 +1,27 @@
+"use client";
+
 import { SetStateAction, useState, useEffect, FormEventHandler } from 'react';
+import { Switcher, Notification, UserAvatar } from "@carbon/icons-react";
 
 import CodeEditor from './CodeEditor';
-import { Grid, Column, Button, InlineLoading, PasswordInput,FileUploader ,Dropdown, TextInput } from '@carbon/react';
+import { Grid, Column, 
+  Button, InlineLoading, 
+  PasswordInput,FileUploader ,
+  Breadcrumb, BreadcrumbItem, 
+  Dropdown, TextInput,
+  Header,Link,
+  HeaderContainer,
+  HeaderName,
+  HeaderNavigation,
+  HeaderMenuButton,
+  HeaderMenuItem,
+  HeaderGlobalBar,
+  HeaderGlobalAction,
+  SkipToContent,
+  SideNav,
+  SideNavItems,
+  HeaderSideNavItems,
+} from '@carbon/react';
 
 import './App.scss';
 import AppHeader from './AppHeader';
@@ -127,6 +147,58 @@ function App() {
   return (
     <>
       <AppHeader />
+
+      <HeaderContainer
+    render={() => (
+      <Header aria-label="Carbon Tutorial">
+        <SkipToContent />
+        <HeaderMenuButton
+          aria-label="Open menu"
+        
+        />
+        <Link href="/" passHref legacyBehavior>
+          <HeaderName prefix="IBM">Code Explainer</HeaderName>
+        </Link>
+        <HeaderNavigation aria-label="Carbon Tutorial">
+          <Link href="/wxmode" passHref legacyBehavior>
+            <HeaderMenuItem>watsonx Code Assistant for Z Mode</HeaderMenuItem>
+          </Link>
+        </HeaderNavigation>
+        <SideNav
+          aria-label="Side navigation"
+          isPersistent={false}
+        >
+          <SideNavItems>
+            <HeaderSideNavItems>
+              <Link href="/repos" passHref legacyBehavior>
+                <HeaderMenuItem>watsonx Code Assistant for Z Mode</HeaderMenuItem>
+              </Link>
+            </HeaderSideNavItems>
+          </SideNavItems>
+        </SideNav>
+        <HeaderGlobalBar>
+          <HeaderGlobalAction
+            aria-label="Notifications"
+            tooltipAlignment="center"
+            className="action-icons"
+          >
+            <Notification size={20} />
+          </HeaderGlobalAction>
+          <HeaderGlobalAction
+            aria-label="User Avatar"
+            tooltipAlignment="center"
+            className="action-icons"
+          >
+            <UserAvatar size={20} />
+          </HeaderGlobalAction>
+          <HeaderGlobalAction aria-label="App Switcher" tooltipAlignment="end">
+            <Switcher size={20} />
+          </HeaderGlobalAction>
+        </HeaderGlobalBar>
+      </Header>
+    )}
+  />
+
       <div id="main">
         <h1>Code Explainer</h1>
         <Grid>
