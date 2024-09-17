@@ -2,7 +2,7 @@
 
 This monorepo contains a full-stack application for a Code Explainer built with React for the frontend and FastAPI in Python for the backend. The application utilizes the power of **watsonx.ai**. In this specific instance, we employ one of the code fine-tuned Language Models (LLM) to translate code from one programming language to another.
 
-![App Screenshot](frontend/src/assets/screenshot_frontend.png)
+![App Screenshot](frontend/src/assets/screenshot_frontend.jpg)
 
 ## Features
 
