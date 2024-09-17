@@ -6,17 +6,13 @@ This monorepo contains a full-stack application for a Code Explainer built with 
 
 ## Features
 
-- Translate code from one programming language to another.
-- Utilizes Language Models on watsonx.ai.
+- Explain code in plain english - Focus on COBOL 
+- Utilizes Language Models on watsonx.ai (Mistral Large) and soon Code Assistant for Z (Granite) model
 - Responsive and user-friendly web interface built with React and Carbon Design.
 - Scalable FastAPI backend to handle translation requests.
 - Easy-to-use and deployable monorepo structure.
 
-## Todos
-- [x] Containerize
-- [ ] Add additional watsonx.ai instances besides BAM
-- [ ] Get saved prompts from watsonx.ai and built view to select them
-- [ ] Detect language, also using an LLM
+
 
 ## Installation
 
@@ -25,8 +21,8 @@ Before getting started, ensure that you have Node.js and Python installed on you
 1. Clone the repository:
 
    ```bash
-   git clone git@github.ibm.com:Sinan-Oezguen/code-translator.git
-   cd code-translator
+   git clone <URL>
+   cd code-explain
    ```
 
 2. Install frontend dependencies:
@@ -68,12 +64,10 @@ Before getting started, ensure that you have Node.js and Python installed on you
 - The frontend is built with [React](https://reactjs.org/), [Vite](https://vitejs.dev/) and [Carbon Design System](https://www.carbondesignsystem.com/).
 - The backend is powered by [FastAPI](https://fastapi.tiangolo.com/).
 
-## Contributing
-
-I welcome contributions! If you'd like to improve this Code Explainer or fix any issues, please fork this repository and create a pull request.
+- Code inspired from [Code Translator](https://github.ibm.com/Sinan-Oezguen/code-translator/tree/main/frontend) by [sinan.oezguen@ibm.com](mailto:sinan.oezguen@ibm.com).
 
 ## Contact
 
-If you have any questions or need assistance, feel free to contact us at [sinan.oezguen@ibm.com](mailto:sinan.oezguen@ibm.com).
+If you have any questions or need assistance, feel free to contact me 
 
 Happy coding! 🚀
