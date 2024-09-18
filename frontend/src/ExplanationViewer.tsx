@@ -1,5 +1,5 @@
 import Editor from 'react-simple-code-editor';
-import { Dropdown, Heading, Section, Tile, AILabel , AILabelContent} from '@carbon/react';
+import { Dropdown, Heading, Section, Tile, AILabel , TextArea, AILabelContent} from '@carbon/react';
 import { highlight, languages } from 'prismjs';
 
 // this loads the language grammer
@@ -9,9 +9,9 @@ import 'prismjs/components/prism-cobol';
 import 'prismjs/components/prism-python';
 import 'prismjs/components/prism-markdown';
 import './prism-vsc-dark-plus.scss';
-import './CodeEditor.scss';
+import './ExplanationViewer.scss';
 
-const CodeEditor = ({
+const ExplanationViewer = ({
   code,
   setCode,
   supportedLanguages,
@@ -47,24 +47,17 @@ const CodeEditor = ({
         }}
       /> */}
   <Tile id="tile1">
-  
+  <AILabel autoAlign size="mini"> </AILabel>
       <Section level={4}>
       <Heading >{heading}</Heading>
       </Section>
-      <Editor
-        
-        readOnly={readOnly}
-        className="code-editor"
-        value={code}
-        onValueChange={setCode != null ? (code) => setCode(code) : () => {}}
-        // Create mapping https://prismjs.com/#supported-languages
-        highlight={(code) =>
-          selectedLanguage
-            ? highlight(code, grammar, selectedLanguage)
-            : undefined
-        }
-        padding={15}
 
+      <TextArea
+       labelText=""
+        readOnly
+        className="explanation-viewer"
+        value={code}
+        rows={20}
         style={{
           fontFamily: '"Fira code", "Fira Mono", monospace',
           fontSize: 14,
@@ -78,4 +71,4 @@ const CodeEditor = ({
   );
 };
 
-export default CodeEditor;
+export default ExplanationViewer;
