@@ -2,32 +2,36 @@
 
 import { SetStateAction, useState, useEffect, FormEventHandler } from 'react';
 import { Switcher, Notification, UserAvatar } from "@carbon/icons-react";
+import { Buffer } from "buffer";
 
 import CodeEditor from './CodeEditor';
 import { Grid, Column, 
   Button, InlineLoading, 
   PasswordInput,FileUploader ,
-  Breadcrumb, BreadcrumbItem, 
-  Dropdown, TextInput,
-  Header,Link,
-  HeaderContainer,
+  Header,
+  HeaderContainer,Link,
   HeaderName,
   HeaderNavigation,
   HeaderMenuButton,
   HeaderMenuItem,
   HeaderGlobalBar,
   HeaderGlobalAction,
+  RadioButton,
+  RadioButtonGroup, 
   SkipToContent,
+  Dropdown,
   SideNav,
   SideNavItems,
-  HeaderSideNavItems,
+  HeaderSideNavItems, Toggle
 } from '@carbon/react';
+
 
 import './App.scss';
 import AppHeader from './AppHeader';
+import ExplanationViewer from './ExplanationViewer';
 
 //FILE upload import axios from 'axios';
-import { readFile, readFileSync } from 'fs';
+//import { readFile, readFileSync } from 'fs';
 
 const codeSnippet = `
  *> setup the identification division
@@ -63,12 +67,21 @@ function App() {
     useState('');
   const [fetching, setFetching] = useState(false);
   const [apiKey, setApiKey] = useState('');
+  const [apiKey2, setApiKey2] = useState('');
+  const [modeWCAZ, setModeWCAZ] = useState(false);
+  const [model, setModel] = useState('mistralai/mixtral-8x7b-instruct-v01');
+  const [modelsist,setModelList] = useState('');
+  const [detailLevel, setDetailLevel] = useState('SIMPLE');
+
+
+
   const [sourcePgm, setSourcePgm] = useState('');
   const [disabledControl, setDisabledControl] = useState(true);
   // prism
   const supportedLanguages = ['cobol', 'java', 'javascript', 'python','markdown'];
   
-  const sourcePgms = ['INSTCUST.CBL', 'TEST.CBL'];
+  const models = ['mistralai/mixtral-8x7b-instruct-v01', 'ibm/granite-34b-code-instruct','ibm/granite-20b-code-javaenterprise'];
+  const modelswcaz = ['ibm/granite-20b-code-instruct-v2'];
 
   var fileURL="";
   
@@ -82,9 +95,17 @@ function App() {
     console.log('destinationCode', destinationCode);
   }, [destinationCode]);
 
-  const translateCode = async () => {
-    setFetching(true);
 
+  const explain = async () => {
+    if(modeWCAZ)
+      return explainCodeWCAZ()
+    else
+      return explainCode()
+  }
+
+  const explainCode = async () => {
+    
+    setFetching(true);
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
 
@@ -116,11 +137,11 @@ function App() {
     {{PROMPT}}
     Program Analysis:
     `
-
+    
     const raw = JSON.stringify({
       api_key: apiKey,
       // model_id: 'codellama/codellama-34b-instruct',
-      model_id: 'mistralai/mixtral-8x7b-instruct-v01',
+      model_id: model,
       input: input,
       parameters: {
         decoding_method: 'greedy',
@@ -144,100 +165,107 @@ function App() {
     return result;
   };
 
+  const explainCodeWCAZ = async () => {
+    
+    setFetching(true);
+    
+    let myHeaders = new Headers();
+    myHeaders.append('Accept', 'application/json');
+    myHeaders.append('Content-Type', 'application/json');
+    myHeaders.append('User-Agent', 'zCodeAssistant/2.1.0');
+    
+    let base64code= btoa(sourceCode)
+
+    const raw = JSON.stringify({
+
+       source_code: base64code, api_key: apiKey2 , level : detailLevel
+
+    });
+
+    const response = await fetch('http://127.0.0.1:8080/v1/wca4z-explain', {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow',
+    });
+    const result = await response.text();
+    console.log('result', result);
+    setFetching(false);
+    return result;
+  };
+  
   return (
     <>
       <AppHeader />
-
-      <HeaderContainer
-    render={() => (
-      <Header aria-label="Carbon Tutorial">
-        <SkipToContent />
-        <HeaderMenuButton
-          aria-label="Open menu"
-        
-        />
-        <Link href="/" passHref legacyBehavior>
-          <HeaderName prefix="IBM">Code Explainer</HeaderName>
-        </Link>
-        <HeaderNavigation aria-label="Carbon Tutorial">
-          <Link href="/wxmode" passHref legacyBehavior>
-            <HeaderMenuItem>watsonx Code Assistant for Z Mode</HeaderMenuItem>
-          </Link>
-        </HeaderNavigation>
-        <SideNav
-          aria-label="Side navigation"
-          isPersistent={false}
-        >
-          <SideNavItems>
-            <HeaderSideNavItems>
-              <Link href="/repos" passHref legacyBehavior>
-                <HeaderMenuItem>watsonx Code Assistant for Z Mode</HeaderMenuItem>
-              </Link>
-            </HeaderSideNavItems>
-          </SideNavItems>
-        </SideNav>
-        <HeaderGlobalBar>
-          <HeaderGlobalAction
-            aria-label="Notifications"
-            tooltipAlignment="center"
-            className="action-icons"
-          >
-            <Notification size={20} />
-          </HeaderGlobalAction>
-          <HeaderGlobalAction
-            aria-label="User Avatar"
-            tooltipAlignment="center"
-            className="action-icons"
-          >
-            <UserAvatar size={20} />
-          </HeaderGlobalAction>
-          <HeaderGlobalAction aria-label="App Switcher" tooltipAlignment="end">
-            <Switcher size={20} />
-          </HeaderGlobalAction>
-        </HeaderGlobalBar>
-      </Header>
-    )}
-  />
-
       <div id="main">
-        <h1>Code Explainer</h1>
+        <h1>Code Explainer </h1>
+        <h2> watsonx.ai / Code Assistant for Z</h2>
+        <Toggle labelText="Code Assistant for Z" labelA="Off" labelB="On"  id="toggle-1"
+        onToggle={(e) => {
+          console.log(e);
+          setModeWCAZ(e)
+          if (!modeWCAZ) setModel(modelswcaz[0])
+          else
+            setModel(models[0])
+          
+        }}
+        />
         <Grid>
-          <Column lg={16} md={8} sm={4}>
+          <Column lg={6} md={8} sm={4}>
             <PasswordInput
               id="password"
-              labelText="watsonx.ai API Key"
+              labelText="watsonx.ai API Key (BAM)"
+              disabled={modeWCAZ}
               onChange={(e: { target: { value: SetStateAction<string> } }) => {
                 setApiKey(e.target.value);
               }}
             />
             </Column>
-            <Column lg={16} md={8} sm={4}>
-            {/* <TextInput
-              id="text-input-addi"
-              labelText="ADDI Server"
+            <Column lg={6} md={10} sm={4}>
+           <Dropdown 
+              id="dropdown-code-model"    
+              initialSelectedItem={models[0]}   
+             items={models}
+             titleText="Model"
+             disabled={modeWCAZ}
+             label={'Select Model'}
+             type="default"
+             onChange={({ selectedItem }: { selectedItem: string }) => {
+              setModel(selectedItem);
+            }}
+             /> 
+          </Column> 
+            <Column lg={6} md={8} sm={4}>
+            <PasswordInput
+              id="password-wca4z"
+              disabled={!modeWCAZ}
+              labelText="watsonx Code Assistant for Z API Key"
               onChange={(e: { target: { value: SetStateAction<string> } }) => {
-                setApiKey(e.target.value);
+                setApiKey2(e.target.value);
               }}
-            /> */}
+            />
+            </Column>
+            <Column lg={6} md={8} sm={4}>
+            <RadioButtonGroup legendText="watsonx Code Assistant for Z Explanation Level" 
+            name="radio-button-default-group " 
+            disabled={!modeWCAZ}
+            onChange={ 
+              (e: React.ChangeEvent<HTMLInputElement>) => { setDetailLevel(e+"");
+            }}
+            >
+               <RadioButton labelText="Simple" value="SIMPLE" id="radio-1" checked />
+               <RadioButton labelText="Detailed" value="DETAILED" id="radio-2" />
+               <RadioButton labelText="Guided" value="GUIDED" id="radio-3" />
+              
+            </RadioButtonGroup>
+            </Column>
+          
+            <Column lg={14} md={8} sm={4}>
               <FileUploader
               id="text-input-addi-btn"
               buttonLabel="Choose File"
               labelDescription="File to explain"
               filenameStatus="edit"
-              
-              
-              ///FILE UPLOAD on SERVER?
-             //onChange={ async(e: { target: { value: SetStateAction<string> } })  => {
-              //   const formData = new FormData();
-              //   formData.append('file', sourcePgm);
-              //   const response = await axios.post('https://localhost:8080/upload', formData, {
-              //     headers: {
-              //         'Content-Type': 'multipart/form-data',
-              //     },
-              // });
-              // console.log('File uploaded successfully', response.data);
-
-             //onChange={ (e: { target: { value: SetStateAction<string> } })  => {
              onChange={ 
               (e: React.ChangeEvent<HTMLInputElement>) => {
                 console.log(e.target.files)
@@ -267,28 +295,43 @@ function App() {
               
            
             />
-            </Column>
-            <Column lg={16} md={8} sm={4}>
-           {/*  <Dropdown
-              id="dropdown-code-pgm"       
-             items={sourcePgms}
-             label={'Select Program'}
-             onChange={({ selectedItem }: { selectedItem: string }) => {
-              setSourcePgm(selectedItem);
-            }}
-             /> */}
-
-             
-            {/*  <PasswordInput
-              id="text-input-program"
-              labelText="Cobol program"
-              onChange={(e: { target: { value: SetStateAction<string> } }) => {
-                setApiKey(e.target.value);
-              }}
-            /> */}
-          </Column>
-          <Column lg={8} md={4} sm={4}>
+         
+         <Button
+          id="button-explain"
+          onClick={async () => {
+            setDestinationCode(
+              stringBetweenStrings(
+                wrapperString,
+                wrapperString,
+                await explain()
+              ).replace(/\\n/g, '\r\n')
+            );
+          }}
+          disabled={
+            sourceCode === '' ||
+            selectedSourceLanguage === '' ||
+            selectedDestinationLanguage === '' ||
+            fetching ||
+            apiKey ==='' && !modeWCAZ ||
+            apiKey2 === '' && modeWCAZ
+          }
+        >
+          {fetching ? (
+            <InlineLoading
+              status="active"
+              iconDescription="Loading"
+              description="Explaining ..."
+            />
+          ) : (
+            'Explain'
+          )}
+        </Button>
+         </Column>
+         
+          
+          <Column lg={8} md={8} sm={4}>
             <CodeEditor
+              
               code={sourceCode}
               setCode={setSourceCode}
               supportedLanguages={supportedLanguages}
@@ -301,8 +344,8 @@ function App() {
               heading="Source Code" 
             />
           </Column>
-          <Column lg={8} md={4} sm={4}>
-            <CodeEditor
+          <Column lg={8} md={8} sm={4}>
+            <ExplanationViewer
               code={destinationCode}
               setCode={setDestinationCode}
               supportedLanguages={supportedLanguages}
@@ -312,40 +355,16 @@ function App() {
               key="destination-editor"
               disabledControl={false} 
               setDisabledControl={false}  
-              heading="Explanation"        
+              heading={"Explanation ("+model+")"}      
                 />
           </Column>
+      
+    
+      
         </Grid>
-        <Button
-          id="button-translate"
-          onClick={async () => {
-            setDestinationCode(
-              stringBetweenStrings(
-                wrapperString,
-                wrapperString,
-                await translateCode()
-              ).replace(/\\n/g, '\r\n')
-            );
-          }}
-          disabled={
-            sourceCode === '' ||
-            selectedSourceLanguage === '' ||
-            selectedDestinationLanguage === '' ||
-            fetching ||
-            apiKey === ''
-          }
-        >
-          {fetching ? (
-            <InlineLoading
-              status="active"
-              iconDescription="Loading"
-              description="Translating ..."
-            />
-          ) : (
-            'Translate'
-          )}
-        </Button>
+       
       </div>
+    
     </>
   );
 }
