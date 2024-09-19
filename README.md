@@ -1,13 +1,13 @@
 # Code Explainer powered by watsonx.ai
 
-This monorepo contains a full-stack application for a Code Explainer built with React for the frontend and FastAPI in Python for the backend. The application utilizes the power of **watsonx.ai**. In this specific instance, we employ one of the code fine-tuned Language Models (LLM) to translate code from one programming language to another.
+This repo contains a full-stack application for a Code Explainer built with React for the frontend and FastAPI in Python for the backend. The application utilizes the power of **watsonx.ai** and **watsonx Code Assistant**. In this specific instance, we employ one of the code fine-tuned Language Models (LLM) to generate code explanation.
 
 ![App Screenshot](frontend/src/assets/screenshot_frontend.jpg)
 
 ## Features
 
 - Explain code in plain english - Focus on COBOL 
-- Utilizes Language Models on watsonx.ai (Mistral Large) and soon Code Assistant for Z (Granite) model
+- Utilizes Language Models on watsonx.ai (Mistral Large, Granite) and  watsonx Code Assistant for Z (Granite) model
 - Responsive and user-friendly web interface built with React and Carbon Design.
 - Scalable FastAPI backend to handle translation requests.
 - Easy-to-use and deployable monorepo structure.
@@ -21,7 +21,7 @@ Before getting started, ensure that you have Node.js and Python installed on you
 
    ```bash
    git clone <URL>
-   cd code-explain
+   cd code-explainer
    ```
 
 2. Install frontend dependencies:
