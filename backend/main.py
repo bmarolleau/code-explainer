@@ -52,7 +52,7 @@ async def generate_code2(request_data: CodeExplainWCAZ):
        # 'Authorization': f'Bearer {request_data.api_key}',
     }
 
-    #print(request_data.model_dump_json())
+    print(request_data.model_dump_json())
 
 
     request_data2="grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey="+request_data.api_key
@@ -61,13 +61,15 @@ async def generate_code2(request_data: CodeExplainWCAZ):
     #print(request_data.model_dump_json())
 
     response = requests.request("POST", url, headers=headers, data=request_data2)
-    print(response.json())
+    #print(response.json())
     json_data = response.json()
    # json=json.dumps(response.json(), indent=4)
     token=json_data['access_token']
-    print("TOKEN="+token)
-    
-    level=request_data.model_dump_json()['level']
+   # print("TOKEN="+token)
+
+    level=request_data.level
+    print("level="+level)
+
     url = "https://api.dataplatform.cloud.ibm.com/v1/wca/code/explanation/COBOL?level="+level
 
     headers = {

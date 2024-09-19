@@ -203,11 +203,12 @@ function App() {
         <Toggle labelText="Code Assistant for Z" labelA="Off" labelB="On"  id="toggle-1"
         onToggle={(e) => {
           console.log(e);
-          setModeWCAZ(e)
-          if (!modeWCAZ) setModel(modelswcaz[0])
+          setModeWCAZ(e)  
+          if (!modeWCAZ) 
+            setModel(modelswcaz[0])
           else
-            setModel(models[0])
-          
+            setModel(models[0])  
+                
         }}
         />
         <Grid>
@@ -224,8 +225,8 @@ function App() {
             <Column lg={6} md={10} sm={4}>
            <Dropdown 
               id="dropdown-code-model"    
-              initialSelectedItem={models[0]}   
-             items={models}
+              initialSelectedItem={model}   
+             items={modeWCAZ?modelswcaz:models}
              titleText="Model"
              disabled={modeWCAZ}
              label={'Select Model'}
@@ -233,6 +234,7 @@ function App() {
              onChange={({ selectedItem }: { selectedItem: string }) => {
               setModel(selectedItem);
             }}
+            
              /> 
           </Column> 
             <Column lg={6} md={8} sm={4}>
@@ -341,7 +343,7 @@ function App() {
               key="source-editor"
               disabledControl={false}
               setDisabledControl={false}   
-              heading="Source Code" 
+              heading="Cobol code" 
             />
           </Column>
           <Column lg={8} md={8} sm={4}>
