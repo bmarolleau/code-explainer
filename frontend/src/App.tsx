@@ -8,6 +8,7 @@ import CodeEditor from './CodeEditor';
 import { Grid, Column, 
   Button, InlineLoading, 
   PasswordInput,FileUploader ,
+  FileUploaderDropContainer,
   Header,
   HeaderContainer,Link,
   HeaderName,
@@ -16,13 +17,16 @@ import { Grid, Column,
   HeaderMenuItem,
   HeaderGlobalBar,
   HeaderGlobalAction,
+  TextArea,
+  Tile,
   RadioButton,
   RadioButtonGroup, 
   SkipToContent,
   Dropdown,
   SideNav,
   SideNavItems,
-  HeaderSideNavItems, Toggle
+  HeaderSideNavItems, Toggle,
+  Filename
 } from '@carbon/react';
 
 
@@ -69,9 +73,18 @@ function App() {
   const [apiKey, setApiKey] = useState('');
   const [apiKey2, setApiKey2] = useState('');
   const [modeWCAZ, setModeWCAZ] = useState(false);
+  const [multifile, setMultifile] = useState(false);
+  const [multifileResult, setMultifileResult] = useState('');
+  const [multifileArchive, setMultifileArchive] = useState('');
+
+  const [pgmList, setPgmList] = useState('');
+
   const [model, setModel] = useState('mistralai/mixtral-8x7b-instruct-v01');
   const [modelsist,setModelList] = useState('');
   const [detailLevel, setDetailLevel] = useState('SIMPLE');
+  const [resultMessage,setResultMessage] = useState('');
+
+  
 
 
 
@@ -97,9 +110,10 @@ function App() {
 
 
   const explain = async () => {
+ 
     if(modeWCAZ)
-      return explainCodeWCAZ()
-    else
+       return explainCodeWCAZ()
+    else 
       return explainCode()
   }
 
@@ -164,6 +178,7 @@ function App() {
     setFetching(false);
     return result;
   };
+  
 
   const explainCodeWCAZ = async () => {
     
@@ -182,24 +197,38 @@ function App() {
 
     });
 
-    const response = await fetch('http://127.0.0.1:8080/v1/wca4z-explain', {
+    const response = await fetch('http://127.0.0.1:8080/v1/wca4z-explain?batchmode='+multifile, {
       method: 'POST',
       headers: myHeaders,
       body: raw,
       redirect: 'follow',
     });
     const result = await response.text();
-    console.log('result', result);
+    console.log('RESULT:', result);
+    interface MyObj {
+      generated_text: string;
+      archive: string;
+     }
+     let obj: MyObj = JSON.parse(result);
+    console.log(obj.generated_text);
+    console.log(obj.archive);
     setFetching(false);
+    setResultMessage("Explanation Ready in file "+obj.archive+" ")
+    setMultifileResult(obj.generated_text)
+    setMultifileArchive(obj.archive)
     return result;
   };
   
+
   return (
     <>
       <AppHeader />
       <div id="main">
+        
         <h1>Code Explainer </h1>
         <h2> watsonx.ai / Code Assistant for Z</h2>
+        <Grid>
+        <Column lg={6} md={8} sm={4}>
         <Toggle labelText="Code Assistant for Z" labelA="Off" labelB="On"  id="toggle-1"
         onToggle={(e) => {
           console.log(e);
@@ -211,7 +240,21 @@ function App() {
                 
         }}
         />
+        </Column>
+            <Column lg={6} md={8} sm={4}>
+        <Toggle labelText="Batch Mode" labelA="Off" labelB="On" toggled={multifile}  id="toggle-2"
+        onToggle={(e) => {
+          console.log(e);
+          setMultifile(e)
+          setResultMessage("")  
+          setFetching(false);
+          setMultifileResult("")
+        }}
+        />
+        </Column>
+       </Grid>
         <Grid>
+          
           <Column lg={6} md={8} sm={4}>
             <PasswordInput
               id="password"
@@ -267,12 +310,16 @@ function App() {
               id="text-input-addi-btn"
               buttonLabel="Choose File"
               labelDescription="File to explain"
+             // labelText='Add Files to explain'
               filenameStatus="edit"
-             onChange={ 
-              (e: React.ChangeEvent<HTMLInputElement>) => {
+              multiple
+             onChange={ async (e: React.ChangeEvent<HTMLInputElement>) => {
                 console.log(e.target.files)
                 var content=""
                 if (e.target.files ) {
+                  setMultifile(false)
+                  setMultifileResult("")
+                  if(e.target.files.length==1){
                   var fileReader = new FileReader();
                   fileReader.onload = () => {
                   const fileContent = fileReader.result as string;
@@ -281,12 +328,92 @@ function App() {
                   if (e.target.files[0].name.endsWith(".cbl"))
                   {
                     setSelectedSourceLanguage("cobol");
-                    setSelectedDestinationLanguage("markdown")
+                    setSelectedDestinationLanguage("markdown") //deprecated, use TextArea instead.
                   }
                   content=fileReader.readAsText(e.target.files[0])+""
                   setSourceCode(content)                 
+                   
+                }
+                else {
+                  setMultifile(true)
+                  if (e.target.files[0].name.endsWith(".cbl"))
+                    {
+                      setSelectedSourceLanguage("cobol");
+                      setSelectedDestinationLanguage("markdown") //deprecated, use TextArea instead.
+                    }
+                  function readFileAsText(file: File): Promise<string | ArrayBuffer | null> {
+                    return new Promise((resolve, reject) => {
+                        const fr = new FileReader();
+                
+                        fr.onload = () => {
+                          //  resolve(fr.result)
+                        };
+                       fr.onloadend= () => {
+                        resolve(fr.result)
+                        };
+                       
+                        fr.onerror = () => {
+                            reject(fr);
+                        };               
+                         fr.readAsText(file)
+                      }) ;
+                    }
+                 // Store promises in array
+                let files=e.target.files
+                let readers = [];
+                 // Abort if there were no files selected
+                if(!files) return;
+                for(let i = 0;i < files.length;i++){ 
+                  if (e.target.files[i].name.endsWith(".cbl"))  
+                    readers.push(readFileAsText(files[i]));
+              }    
+                  // Trigger Promises
+                Promise.all(readers).then((values) => {
+                  // Values will be an array that contains an item
+                  // with the text of every selected file
+                  // ["File1 Content", "File2 Content" ... "FileN Content"]
+                  for(let i = 0;i < files.length;i++){    
+                    //files[i] , values[i]
+                    
+                    const uploadFile = async (filename:string, sourceCode: string) => {
+    
+                      setFetching(true);
+                      
+                      let myHeaders = new Headers();
+                      myHeaders.append('Accept', 'application/json');
+                      myHeaders.append('Content-Type', 'application/json');
+                      
+                      let base64code= btoa(sourceCode)
+                      
+                      const raw = JSON.stringify({
+                  
+                         source_code: base64code, file_name:filename
+                  
+                      });
+                  
+                      const response = await fetch('http://127.0.0.1:8080/v1/uploadfile', {
+                        method: 'POST',
+                        headers: myHeaders,
+                        body: raw,
+                        redirect: 'follow',
+                      });
+                      const result = await response.text();
+                      console.log('result', result);
+                      setFetching(false);
+                      return result;
+                    };
+                    if (e.target.files && e.target.files[i].name.endsWith(".cbl"))  
+                       {
+                      uploadFile(files[i].name,values[i]+"")
+                      setResultMessage("Files loaded, ready for explanation\n")
+                      setSourceCode("dummy")
+                    }
+                }    
+                  
+              });
               
-                }  
+                }
+              }  
               }  
             }
               onDelete={(e) => {
@@ -297,7 +424,19 @@ function App() {
               
            
             />
-         
+   
+   {multifile &&(
+            <Column lg={8} md={8} sm={4}>
+                <Tile className="upload-status" 
+                >{resultMessage}
+                 {multifileResult &&(<a href={ 'http://localhost:8080/static/' + multifileArchive }>{multifileArchive}</a>)}
+                </Tile>
+                                        
+           </Column>
+                )}
+
+
+        
          <Button
           id="button-explain"
           onClick={async () => {
@@ -330,10 +469,10 @@ function App() {
         </Button>
          </Column>
          
-          
-          <Column lg={8} md={8} sm={4}>
+      
+          {!multifile &&(
+             <Column lg={8} md={8} sm={4}>
             <CodeEditor
-              
               code={sourceCode}
               setCode={setSourceCode}
               supportedLanguages={supportedLanguages}
@@ -345,8 +484,11 @@ function App() {
               setDisabledControl={false}   
               heading="Cobol code" 
             />
-          </Column>
-          <Column lg={8} md={8} sm={4}>
+              </Column>
+          )}
+        
+          <Column lg={16} md={8} sm={4}>
+          {!multifile &&(
             <ExplanationViewer
               code={destinationCode}
               setCode={setDestinationCode}
@@ -359,6 +501,23 @@ function App() {
               setDisabledControl={false}  
               heading={"Explanation ("+model+")"}      
                 />
+              )}
+
+           {multifileResult &&(   
+                <ExplanationViewer
+                code={multifileResult}
+                setCode={setDestinationCode}
+                supportedLanguages={supportedLanguages}
+                selectedLanguage={selectedDestinationLanguage}
+                setSelectedLanguage={setSelectedDestinationLanguage}
+                readOnly={true}
+                key="destination-editor"
+                disabledControl={false} 
+                setDisabledControl={false}  
+                heading={"Explanation ("+model+")"}      
+                  />
+            )}
+
           </Column>
       
     
