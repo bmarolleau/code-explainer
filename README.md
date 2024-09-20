@@ -14,7 +14,7 @@ This repo contains a full-stack application for a Code Explainer built with Reac
 
 ## Preview : Batch mode (tech preview with WCA4Z only)
 
-![App Screenshot](frontend/src/assets/screenshot_screenshot_batchmode_preview.jpg)
+![App Screenshot](frontend/src/assets/screenshot_batchmode_preview.jpg)
 
 - Triggered selecting multiple files, generates a tar file with your explanations.
 
