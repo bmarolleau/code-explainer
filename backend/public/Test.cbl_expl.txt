@@ -1,0 +1,12 @@
+CODE EXPLANATION BY WCA4Z - Test.cbl
+
+
+1. Summary of the business purpose of the code:
+The code is a simple "Hello, World!" program in COBOL. It demonstrates the basic structure of a COBOL program and the syntax for defining variables, performing I/O, and flow control.
+
+2. Input and output records:
+The program does not have any input or output records.
+
+3. Free-text summary of the code logic:
+The code defines the identification division, the program id, the procedure division, the string variable, the output statement, and the RUN statement. The identification division defines the program name as "HELLO". The procedure division contains the main program, which prints the string "WILLKOMMEN" to the screen. The RUN statement starts the program execution.
+

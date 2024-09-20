@@ -8,7 +8,13 @@
         margin-left: 0 !important;
         margin-right: spacing.$spacing-08 !important;
     }
-
+   .upload-status
+   {
+    padding: '6px 16px';
+    align-items: 'left';
+    background-color: white;
+    display: 'flex';
+}
     .cds--css-grid {
         padding-left: 0 !important;
     }
