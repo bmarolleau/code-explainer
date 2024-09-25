@@ -12,11 +12,11 @@ This repo contains a full-stack application for a Code Explainer built with Reac
 - Scalable FastAPI backend to handle translation requests.
 - Easy-to-use and deployable monorepo structure.
 
-## Batch mode (tech preview in WCA4Z mode only for now)
+## Batch mode (tech preview)
 
 ![App Screenshot](frontend/src/assets/screenshot_batchmode_preview.jpg)
 
-- Triggered selecting multiple files, generates a tar file with your explanations.
+- Triggered selecting multiple files, generates a tar file with your explanations. Works with WCAZ only for now.
 
 ## Installation
 
