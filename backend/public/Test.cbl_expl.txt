@@ -1,12 +1,13 @@
 CODE EXPLANATION BY WCA4Z - Test.cbl
+Business Purpose:
+The COBOL code block above is a simple "Hello World" program in COBOL. It demonstrates the basic structure of a COBOL program, including the identification division, program id, procedure division, and data division.
 
-
-1. Summary of the business purpose of the code:
-The code is a simple "Hello, World!" program in COBOL. It demonstrates the basic structure of a COBOL program and the syntax for defining variables, performing I/O, and flow control.
-
-2. Input and output records:
-The program does not have any input or output records.
-
-3. Free-text summary of the code logic:
-The code defines the identification division, the program id, the procedure division, the string variable, the output statement, and the RUN statement. The identification division defines the program name as "HELLO". The procedure division contains the main program, which prints the string "WILLKOMMEN" to the screen. The RUN statement starts the program execution.
+Structured Summary of the Code Logic:
+1. TUP the identification division: This line establishes the beginning of the identification division, which is the first section of a COBOL program.
+2. TUP the program id: This line defines the program id, or name, of the COBOL program. In this case, the program id is AM-ID. HELLO.
+3. TUP the procedure division: This line establishes the beginning of the procedure division, which is the second section of a COBOL program.
+4. INT a string: This line declares a variable named AY, which is of type STRING.
+5. AY 'WILLKOMMEN': This line assigns the value "WILLKOMMEN" to the variable AY.
+6. D our program: This line marks the end of the procedure division and the beginning of the data division.
+7. RUN: This line executes the COBOL program.
 

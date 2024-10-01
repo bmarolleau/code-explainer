@@ -113,10 +113,8 @@ async def generate_code2(request_data: CodeExplainWCAZ, batchmode: str = "false"
                 }
                 #Remove API Key and Level passed in the POST data part of the initial request 
             
-                print(request_data.model_dump_json())
                 response = requests.request("POST", url, headers=headers, data=request_data.model_dump_json())
                 json_data = response.json()
-                print(response.json())
                 code=json_data['generated_text']
                 origin_file_name=fname.decode('utf-8')
                 file_name=fname.decode('utf-8')+"_expl.txt"
@@ -157,7 +155,6 @@ async def generate_code2(request_data: CodeExplainWCAZ, batchmode: str = "false"
     request_data.__delattr__('level')
     response = requests.request("POST", url, headers=headers, data=request_data.model_dump_json())
     json_data = response.json()
-    print(response.json())
     code=json_data['generated_text']
     return code
 
@@ -172,9 +169,7 @@ async def upload_file(request_data: FileUpload):
     fullpath = os.path.join(basedir,save_path, file_name)  
     import glob
     files = glob.glob(fullpath)
-    print(files)
     for f in files:
-        print("FILETODELETE:"+f)
         os.remove( f)         
     file1 = open(fullpath, "w+")
     file1.write(source_code)

@@ -1,0 +1,24 @@
+CODE EXPLANATION BY WCA4Z - Test2.cbl
+1. Business purpose:
+The COBOL code block is a program that inserts a customer record into a database. The program uses the CICS LINK command to call a stored procedure in a DB2 database to insert the customer record. The program also uses the CICS LINK command to call a stored procedure in a DB2 database to retrieve the customer number assigned to the new customer record. The program also uses the CICS ASKTIME and FORMATTIME commands to retrieve the current date and time and write them to the error message.
+
+2. Structured summary of the code logic broken into steps:
+
+a. INSERT-CUSTOMER:
+This is the main procedure of the program. It performs the following steps:
+1. Moves the SQL statement for inserting a customer record into the SQLCA area.
+2. Checks if the NCS (Non-Concurrent SQL) feature is enabled. If it is, it inserts the customer record using the INSERT INTO statement with explicit values for all fields. If NCS is not enabled, it inserts the customer record using the INSERT INTO statement with DEFAULT for the customer number.
+3. Moves the customer number assigned to the new customer record to the CA-CUSTOMER-NUM field.
+4. Exits the procedure.
+
+b. WRITE-ERROR-MESSAGE:
+This procedure writes an error message to the CICS region. It performs the following steps:
+1. Moves the SQLCODE from the SQLCA area to the EM-SQLRC field.
+2. Retrieves the current date and time using the CICS ASKTIME and FORMATTIME commands.
+3. Moves the retrieved date and time to the EM-DATE and EM-TIME fields, respectively.
+4. Calls the LGSTSQ program using the CICS LINK command to write the error message to the CICS region.
+5. Checks if the length of the error message is greater than 90 characters. If it is, it writes the first 90 characters of the error message to the CICS region. If it is not, it writes the entire error message to the CICS region.
+6. Exits the procedure.
+
+Overall, the COBOL code block is a program that inserts a customer record into a database, retrieves the customer number assigned to the new record, and writes an error message to the CICS region if necessary. The program uses the CICS LINK command to call a stored procedure in a DB2 database, the CICS ASKTIME and FORMATTIME commands to retrieve the current date and time, and the DFHCOMMAREA-1 area to write the error message to the CICS region.
+

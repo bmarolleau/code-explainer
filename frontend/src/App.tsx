@@ -8,25 +8,12 @@ import CodeEditor from './CodeEditor';
 import { Grid, Column, 
   Button, InlineLoading, 
   PasswordInput,FileUploader ,
-  FileUploaderDropContainer,
-  Header,
-  HeaderContainer,Link,
-  HeaderName,
-  HeaderNavigation,
-  HeaderMenuButton,
-  HeaderMenuItem,
-  HeaderGlobalBar,
-  HeaderGlobalAction,
-  TextArea,
   Tile,
   RadioButton,
-  RadioButtonGroup, 
-  SkipToContent,
+  RadioButtonGroup,
   Dropdown,
-  SideNav,
-  SideNavItems,
-  HeaderSideNavItems, Toggle,
-  Filename
+ Toggle,
+ 
 } from '@carbon/react';
 
 
@@ -66,9 +53,8 @@ const stringBetweenStrings = (
 function App() {
   const [sourceCode, setSourceCode] = useState('');
   const [destinationCode, setDestinationCode] = useState('');
-  const [selectedSourceLanguage, setSelectedSourceLanguage] = useState('');
-  const [selectedDestinationLanguage, setSelectedDestinationLanguage] =
-    useState('');
+  const [selectedSourceLanguage, setSelectedSourceLanguage] = useState('cobol');
+  const [selectedDestinationLanguage, setSelectedDestinationLanguage] = useState('cobol');
   const [fetching, setFetching] = useState(false);
   const [apiKey, setApiKey] = useState('');
   const [apiKey2, setApiKey2] = useState('');
@@ -83,10 +69,6 @@ function App() {
   const [modelsist,setModelList] = useState('');
   const [detailLevel, setDetailLevel] = useState('SIMPLE');
   const [resultMessage,setResultMessage] = useState('');
-
-  
-
-
 
   const [sourcePgm, setSourcePgm] = useState('');
   const [disabledControl, setDisabledControl] = useState(true);
@@ -406,7 +388,8 @@ function App() {
                        {
                       uploadFile(files[i].name,values[i]+"")
                       setResultMessage("Files loaded, ready for explanation\n")
-                      setSourceCode("dummy")
+                      setSourceCode(" ")
+                      setDestinationCode("")
                     }
                 }    
                   
@@ -420,6 +403,7 @@ function App() {
                 //console.log(e);
                 //console.log(e.target);
                 setSourceCode("")
+                setDestinationCode("")
               }}
               
            
@@ -446,7 +430,8 @@ function App() {
                 wrapperString,
                 await explain()
               ).replace(/\\n/g, '\r\n')
-            );
+            ); 
+           // setDestinationCode(await explain())
           }}
           disabled={
             sourceCode === '' ||
@@ -487,7 +472,7 @@ function App() {
               </Column>
           )}
         
-          <Column lg={16} md={8} sm={4}>
+          <Column lg={8} md={8} sm={4}>
           {!multifile &&(
             <ExplanationViewer
               code={destinationCode}
