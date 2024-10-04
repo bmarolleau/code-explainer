@@ -13,6 +13,7 @@ import { Grid, Column,
   RadioButtonGroup,
   Dropdown,
  Toggle,
+ TextInput,
  
 } from '@carbon/react';
 
@@ -66,6 +67,8 @@ function App() {
   const [pgmList, setPgmList] = useState('');
 
   const [model, setModel] = useState('mistralai/mixtral-8x7b-instruct-v01');
+  const [projectid, setProjectidl] = useState('b6d32fc7-7c58-4007-9f7f-65f7d6117a00');
+
   const [modelsist,setModelList] = useState('');
   const [detailLevel, setDetailLevel] = useState('SIMPLE');
   const [resultMessage,setResultMessage] = useState('');
@@ -75,7 +78,7 @@ function App() {
   // prism
   const supportedLanguages = ['cobol', 'java', 'javascript', 'python','markdown'];
   
-  const models = ['mistralai/mixtral-8x7b-instruct-v01', 'ibm/granite-34b-code-instruct','ibm/granite-20b-code-javaenterprise'];
+  const models = ['ibm/granite-3b-code-instruct', 'ibm/granite-34b-code-instruct','ibm/granite-8B-Code-instruct', 'mistralai/mistral-large','mistralai/mixtral-8x7b-instruct-v01'];
   const modelswcaz = ['ibm/granite-20b-code-instruct-v2'];
 
   var fileURL="";
@@ -92,7 +95,8 @@ function App() {
 
 
   const explain = async () => {
- 
+    //Clear dest text field when pushing
+    setDestinationCode("")
     if(modeWCAZ)
        return explainCodeWCAZ()
     else 
@@ -130,26 +134,45 @@ function App() {
     6. Program Detail Analysis (Section wise) : Make sure this part has a list of all sections of the program, in order of execution and you explain the code in each section line by line with all the variables used, the main logic, and the code flow.
 
     COBOL Code:
-    {{PROMPT}}
+    `+sourceCode+
+    `
     Program Analysis:
     `
-    
+
+    const prompt = `
+    You are an expert COBOL Developer who can effectively understand and document the existing COBOL code,
+   ensuring a smooth transition to modern systems while preserving essential business logic and functionality. 
+    Your task is to summarize the given COBOL code. A well-formatted summary document should have the following six sections:
+    1. Program Analysis: Make sure this section should explain why the program is called.
+    2. Set of operations performed: Make sure this section should summarize the functionality of the program.
+    3. Files Used:Make sure this section lists and explain files used in the program also highlighting whether they are used as input, output or both (I-O)
+    4. Program Called:Make sure this section should only list all external programs called like CALL " " , and subroutines or sub-programs are not included.
+    5. Program Includes:Make sure this section should only list all the COBOL includes used in the program.
+    5. Input to the program: Make sure this section should list all Input parameters to the program,all variables declared under "LINKAGE SECTION" should be captured here.
+    6. Program Detail Analysis (Section wise) : Make sure this part has a list of all sections of the program, in order of execution and you explain the code in each section line by line with all the variables used, the main logic, and the code flow.
+
+    COBOL Code:
+    {{SOURCE_CODE}}
+    Program Analysis:
+    `
+
     const raw = JSON.stringify({
       api_key: apiKey,
       // model_id: 'codellama/codellama-34b-instruct',
       model_id: model,
-      input: input,
+      input: prompt.replace(" {{SOURCE_CODE}}", sourceCode),
+      project_id: projectid,
       parameters: {
         decoding_method: 'greedy',
         min_new_tokens: 1,
         max_new_tokens: 500//,
         //stop_sequences: ["\n\n"]
       },
-      data:{ PROMPT: sourceCode}
+      data:{ PROMPT: prompt}
 
     });
 
-    const response = await fetch('http://127.0.0.1:8080/v1/explain', {
+    const response = await fetch('http://127.0.0.1:8080/v2/explain?batchmode='+multifile, {
       method: 'POST',
       headers: myHeaders,
       body: raw,
@@ -158,6 +181,17 @@ function App() {
     const result = await response.text();
     console.log('result', result);
     setFetching(false);
+    interface MyObj {
+      generated_text: string;
+      archive: string;
+     }
+     let obj: MyObj = JSON.parse(result);
+    console.log(obj.generated_text);
+    console.log(obj.archive);
+    setFetching(false);
+    setResultMessage("Explanation Ready in file ")
+    setMultifileResult(obj.generated_text)
+    setMultifileArchive(obj.archive)
     return result;
   };
   
@@ -195,7 +229,7 @@ function App() {
     console.log(obj.generated_text);
     console.log(obj.archive);
     setFetching(false);
-    setResultMessage("Explanation Ready in file "+obj.archive+" ")
+    setResultMessage("Explanation Ready in file ")
     setMultifileResult(obj.generated_text)
     setMultifileArchive(obj.archive)
     return result;
@@ -237,31 +271,40 @@ function App() {
        </Grid>
         <Grid>
           
-          <Column lg={6} md={8} sm={4}>
+          <Column lg={6} md={6} sm={4}>
             <PasswordInput
               id="password"
-              labelText="watsonx.ai API Key (BAM)"
+              labelText="watsonx.ai API Key (IBM Cloud)"
               disabled={modeWCAZ}
               onChange={(e: { target: { value: SetStateAction<string> } }) => {
                 setApiKey(e.target.value);
               }}
             />
             </Column>
-            <Column lg={6} md={10} sm={4}>
+            <Column lg={6} md={6} sm={4}>
            <Dropdown 
               id="dropdown-code-model"    
               initialSelectedItem={model}   
              items={modeWCAZ?modelswcaz:models}
-             titleText="Model"
+             titleText="watsonx.ai Model"
              disabled={modeWCAZ}
              label={'Select Model'}
              type="default"
              onChange={({ selectedItem }: { selectedItem: string }) => {
               setModel(selectedItem);
             }}
-            
              /> 
-          </Column> 
+        
+              <TextInput
+              id="text-project-id"
+              labelText="watsonx.ai project id (IBM Cloud)"
+              disabled={modeWCAZ}
+              onChange={(e: { target: { value: SetStateAction<string> } }) => {
+                setProjectidl(e.target.value);
+              }}
+            />
+            </Column>
+
             <Column lg={6} md={8} sm={4}>
             <PasswordInput
               id="password-wca4z"
@@ -345,6 +388,24 @@ function App() {
                 let readers = [];
                  // Abort if there were no files selected
                 if(!files) return;
+
+                let myHeaders = new Headers();
+                myHeaders.append('Accept', 'application/json');
+                myHeaders.append('Content-Type', 'application/json');
+
+              // CLEANUP Remote folder
+                const raw1 = JSON.stringify({
+                  folder_name: 'public'
+               });
+                const response1 = await fetch('http://127.0.0.1:8080/v1/cleanupfolder', {
+                  method: 'POST',
+                  headers: myHeaders,
+                  body: raw1,
+                  redirect: 'follow',
+                });
+                const result1 = await response1.text();
+                //END Cleanup
+
                 for(let i = 0;i < files.length;i++){ 
                   if (e.target.files[i].name.endsWith(".cbl"))  
                     readers.push(readFileAsText(files[i]));
@@ -361,10 +422,7 @@ function App() {
     
                       setFetching(true);
                       
-                      let myHeaders = new Headers();
-                      myHeaders.append('Accept', 'application/json');
-                      myHeaders.append('Content-Type', 'application/json');
-                      
+                      // Upload source files in remote folder
                       let base64code= btoa(sourceCode)
                       
                       const raw = JSON.stringify({
@@ -372,7 +430,8 @@ function App() {
                          source_code: base64code, file_name:filename
                   
                       });
-                  
+                      
+
                       const response = await fetch('http://127.0.0.1:8080/v1/uploadfile', {
                         method: 'POST',
                         headers: myHeaders,
@@ -429,7 +488,7 @@ function App() {
                 wrapperString,
                 wrapperString,
                 await explain()
-              ).replace(/\\n/g, '\r\n')
+              ).replace(/\\n/g, '\r\n').slice(1, -1).replace(/\\/g, "")
             ); 
            // setDestinationCode(await explain())
           }}
