@@ -11,12 +11,13 @@ This repo contains a full-stack application for a Code Explainer built with Reac
 - Responsive and user-friendly web interface built with React and Carbon Design.
 - Scalable FastAPI backend to handle translation requests.
 - Easy-to-use and deployable monorepo structure.
+- This project utilizes the power of [watsonx.ai](https://watsonx.ai/) for code explanation. Former version in v1.0.0-bam release used the internal watsonx aka [BAM version](https://bam.res.ibm.com/) . New version used full IBM Cloud watsonx.ai and watsonx Code Assistant for z API. 
 
 ## Batch mode (tech preview)
 
 ![App Screenshot](frontend/src/assets/screenshot_batchmode_preview.jpg)
 
-- Triggered selecting multiple files, generates a tar file with your explanations. Works with WCAZ only for now.
+- NEW: Triggered selecting multiple files, generates a tar file with your explanations. Works with Watsonx.ai and WCAZ.
 
 ## Installation
 
@@ -64,7 +65,6 @@ Before getting started, ensure that you have Node.js and Python installed on you
 
 ## Acknowledgments
 
-- This project utilizes the power of [watsonx.ai](https://watsonx.ai/) for code translation. Currently the internal [BAM version](https://bam.res.ibm.com/) is being used. Therefore, please only use it for internal purposes for now.
 - The frontend is built with [React](https://reactjs.org/), [Vite](https://vitejs.dev/) and [Carbon Design System](https://www.carbondesignsystem.com/).
 - The backend is powered by [FastAPI](https://fastapi.tiangolo.com/).
 

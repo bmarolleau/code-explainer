@@ -1,0 +1,24 @@
+CODE EXPLANATION BY WX.AI - Test.cbl
+The program is called to print a string 'WILLKOMMEN' to the screen."
+
+    Set of operations performed:
+    "The program prints the string 'WILLKOMMEN' to the screen."
+
+    Files Used:
+    "No files are used in this program."
+
+    Program Called:
+    "No external programs are called in this program."
+
+    Program Includes:
+    "No includes are used in this program."
+
+    Input to the program:
+    "No input parameters are used in this program."
+
+    Program Detail Analysis (Section wise):
+    "The program consists of a single section named 'PROGRAM-NAME' which contains a single statement 'DISPLAY 'WILLKOMMEN'' which prints the string 'WILLKOMMEN' to the screen."
+
+"
+
+
