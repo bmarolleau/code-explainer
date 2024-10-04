@@ -24,6 +24,7 @@ archive.zip
 public/*.gz
 public/*.cbl
 
+
 # vim temporary files
 *~
 .*.sw?
