@@ -183,7 +183,7 @@ async def generate_code2(request_data: CodeExplainWCAZ, batchmode: str = "false"
                 headers = {
                     'Content-Type': 'application/json',
                     'Authorization': f'Bearer {token}',
-                    'user-agent' : 'zCodeAssistant/2.1.0' 
+                    'user-agent' : 'zCodeAssistant/2.3.0' 
                 }
                 #Remove API Key and Level passed in the POST data part of the initial request 
             
@@ -223,7 +223,7 @@ async def generate_code2(request_data: CodeExplainWCAZ, batchmode: str = "false"
         headers = {
             'Content-Type': 'application/json',
             'Authorization': f'Bearer {token}',
-            'user-agent' : 'zCodeAssistant/2.1.0' 
+            'user-agent' : 'zCodeAssistant/2.3.0' 
         }
         #Remove API Key and Level passed in the POST data part of the initial request 
         request_data.__delattr__('api_key')

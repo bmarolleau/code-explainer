@@ -79,7 +79,7 @@ function App() {
   const supportedLanguages = ['cobol', 'java', 'javascript', 'python','markdown'];
   
   const models = ['ibm/granite-3b-code-instruct', 'ibm/granite-34b-code-instruct','ibm/granite-8B-Code-instruct', 'mistralai/mistral-large','mistralai/mixtral-8x7b-instruct-v01'];
-  const modelswcaz = ['ibm/granite-20b-code-instruct-v2'];
+  const modelswcaz = ['ibm/granite-20b-code-z-xplain-v1'];
 
   var fileURL="";
   
